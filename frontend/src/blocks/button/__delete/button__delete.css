@@ -1,0 +1,14 @@
+.button__delete {
+    background-image: url(../../../images/Group.svg);
+    background-color: transparent;
+    padding: 0;
+    border: 0;
+    position: absolute;
+    width: 18px;
+    height: 19px;
+    margin: 20px 0 0 -40px;
+}
+
+.button__delete_hidden {
+    display: none;
+}

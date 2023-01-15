@@ -1,0 +1,44 @@
+.popup__close-button {
+    position: absolute;
+    cursor: pointer;
+    background: none;
+    border: none;
+    width: 32px;
+    height: 32px;
+    right: -36px;
+    top: -56px;
+    transition: opacity 0.2s;
+}
+.popup__close-button::before {
+    position: absolute;
+    content: '';
+    height: 32px;
+    border: 2px solid #ffffff;
+    background-color: #ffffff;
+    transform: rotate(45deg);
+}
+.popup__close-button::after {
+    position: absolute;
+    content: '';
+    height: 32px;
+    border: 2px solid #ffffff;
+    background-color: #ffffff;
+    transform: rotate(-45deg);
+}
+
+@media screen and (min-width: 320px) and (max-width: 768px) {
+    .popup__close-button {
+        top: -47.8px;
+        right: 1px;
+        width: 20px;
+        height: 20px;
+    }
+    .popup__close-button::before {
+        height: 20px;
+        border: 1.5px solid #ffffff;
+    }
+    .popup__close-button::after {
+        height: 20px;
+        border: 1.5px solid #ffffff;
+    }
+}

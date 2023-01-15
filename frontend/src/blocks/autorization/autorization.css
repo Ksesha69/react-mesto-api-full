@@ -1,0 +1,10 @@
+.autorization {
+    margin-top: 60px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+a {
+    color: #fff;
+}

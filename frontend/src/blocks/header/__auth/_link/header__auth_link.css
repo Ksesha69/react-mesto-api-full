@@ -1,0 +1,18 @@
+.header__auth_link {
+    border: 0;
+    padding: 0;
+    background-color: #000;
+    cursor: pointer;
+    color: #fff;
+    transition: opacity 0.2s;
+}
+
+.header__auth_link:hover {
+    opacity: 0.6;
+}
+
+.header__auth_link:visited {
+    border: none;
+    background-color: #000;
+    color: #fff;
+}
