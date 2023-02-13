@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
@@ -5,9 +6,8 @@ const cors = require('cors');
 const { celebrate, Joi } = require('celebrate');
 const { errors } = require('celebrate');
 
-const NotFound = require('./errors/notFound');
 const auth = require('./middlewares/auth');
-const { createUser, login } = require('./controllers/users');
+const { createUser, login, logout } = require('./controllers/users');
 
 const { PORT = 3001 } = process.env;
 const app = express();
@@ -35,11 +35,16 @@ app.post('/signup', celebrate({
     password: Joi.string().required().min(8),
   }),
 }), createUser);
+app.post('/logout', logout);
+
+app.get('/crash-test', () => {
+  setTimeout(() => {
+    throw new Error('Сервер сейчас упадёт');
+  }, 0);
+});
 
 app.use('/users', auth, require('./routes/users'));
 app.use('/cards', auth, require('./routes/cards'));
-
-app.use('*', NotFound);
 
 app.use(errors());
 
@@ -47,7 +52,7 @@ app.use((err, req, res) => {
   const { status = 500, message } = err;
   res
     .status(status)
-    .send({
+    .json({
       message: status === 500
         ? 'Ошибка сервера'
         : message,

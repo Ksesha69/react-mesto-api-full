@@ -27,30 +27,30 @@ function App() {
   const [isInfoTooltipOpen, setInfoTooltipOpen] = useState(false);
   const [userEmail, setUserEmail] = useState(null);
   const [requestFailed, setRequestFailed] = useState(false);
+  const token = localStorage.getItem('jwt');
 
   const navigate = useNavigate();
 
   useEffect(() => {
-    api.getUserInfo()
+    api.getUserInfo(token)
     .then((userData) => {
       setCurrentUser(userData);
   })
   .catch(err => {
     console.log(err);
   });
-    api.getInitialCard()
+    api.getInitialCard(token)
     .then((card) => {
       setCards(card); 
-      console.log(card);
       navigate('/')
     })
     .catch(err => {
-        console.log(err);
+        console.log(err.message);
     });
-},[navigate]);
+},[token]);
 
   function handleUpdateUser(data) {
-    api.setUserInfo(data)
+    api.setUserInfo(data, token)
     .then((usr) => {
       setCurrentUser(usr);
       closeAllPopups();
@@ -61,7 +61,7 @@ function App() {
   }
 
   function handleUpdateAvatar(avatar) {
-    api.addNewAvatar(avatar)
+    api.addNewAvatar(avatar, token)
     .then((data) => {
       setCurrentUser(data);
       closeAllPopups();
@@ -72,20 +72,20 @@ function App() {
   }
 
   function handleAddPlaceSubmit(data) {
-    api.addNewCard(data)
+    api.addNewCard(data, token)
     .then((newCard) => {
       setCards([newCard, ...cards]); 
       closeAllPopups();
     })
     .catch(err => {
       console.log(err);
-  });
+  })
   }
 
     function handleCardLike(card) {
         const isLiked = card.likes.some(i => i._id === currentUser._id);
 
-        api.toggleLike(card._id, isLiked).then((newCard) => {
+        api.toggleLike(card._id, isLiked, token).then((newCard) => {
             setCards((state) => state.map((c) => c._id === card._id ? newCard : c));
         })
         .catch(err => {
@@ -95,7 +95,7 @@ function App() {
 
     function handleCardDelete(card) {
         const isOwn = card.owner._id === currentUser._id;
-        api.deleteCard(card._id, !isOwn)
+        api.deleteCard(card._id, !isOwn, token)
         .then(setCards((state) => state.filter((f) => f._id !== card._id)))
         .catch(err => {
           console.log(err);
@@ -120,8 +120,9 @@ function App() {
   }
 
   useEffect(() => {
+    const token = localStorage.getItem('jwt')
     auth
-      .checkToken()
+      .checkToken(token)
       .then((data) => {
         if(data) {
         setUserAuth(true)
@@ -133,7 +134,7 @@ function App() {
       .catch((err) => {
         console.log(err)
       })
-  }, [navigate, userAuth])
+  }, [navigate]);
 
   function handleRegistration(e, {email, password}) {
     e.preventDefault();
@@ -160,6 +161,7 @@ function App() {
     auth
     .signIn({email, password})
     .then((res) => {
+      localStorage.setItem('jwt', res.token);
       navigate('/');
       setUserAuth(true);
       setUserEmail(email);
@@ -173,6 +175,7 @@ function App() {
 
   const signOut = (() => {
     auth.signOut();
+    localStorage.removeItem('jwt');
     navigate('/login');
     setUserEmail('');
     setUserAuth(false);

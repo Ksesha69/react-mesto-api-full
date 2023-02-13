@@ -11,7 +11,7 @@ class Auth {
             return res.json();
         }
         return res.json().then((err) => {
-            err.code = res.status;
+            err.code = res.message;
             return Promise.reject(err);
         });
     }
@@ -50,10 +50,13 @@ class Auth {
         }).then((res) => this._handleResponse(res));
     }
 
-    checkToken() {
+    checkToken(token) {
         return fetch(`${this.url}/users/me`, {
             credentials: 'include',
-            headers: this.headers,
+            headers: {
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
         })
         .then((res) => this._handleResponse(res));
 }
