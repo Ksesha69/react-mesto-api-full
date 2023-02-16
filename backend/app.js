@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const { celebrate, Joi } = require('celebrate');
 const { errors } = require('celebrate');
+const { requestLogger, errorLogger } = require('./middlewares/logger');
 
 const auth = require('./middlewares/auth');
 const { createUser, login, logout } = require('./controllers/users');
@@ -12,8 +13,15 @@ const { createUser, login, logout } = require('./controllers/users');
 const { PORT = 3001 } = process.env;
 const app = express();
 
+const allowedCors = [
+  'http://api.domainname.mesto.nomoredomains.club',
+  'https://api.domainname.mesto.nomoredomains.club',
+  'http://domainname.mesto.nomoredomains.club',
+  'https://domainname.mesto.nomoredomains.club',
+];
+
 const options = {
-  origin: 'http://localhost:3000',
+  origin: allowedCors,
   optionSuccessStatus: 200,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'HEAD', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Origin', 'X-Requested-With', 'Accept', 'x-client-key', 'x-client-token', 'x-client-secret', 'Authorization'],
@@ -24,6 +32,8 @@ app.use(cors(options));
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
+app.use(requestLogger);
 
 app.post('/signin', login);
 app.post('/signup', celebrate({
@@ -45,6 +55,8 @@ app.get('/crash-test', () => {
 
 app.use('/users', auth, require('./routes/users'));
 app.use('/cards', auth, require('./routes/cards'));
+
+app.use(errorLogger);
 
 app.use(errors());
 

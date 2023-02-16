@@ -40,5 +40,5 @@ export const profileConfig = {
     avatarSelector: '.profile__avatar'
 }
 
-export const url = "http://localhost:3001";
+export const url = "https://api.domainname.mesto.nomoredomains.club";
 
