@@ -7,7 +7,6 @@ const { celebrate, Joi } = require('celebrate');
 const { errors } = require('celebrate');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const { serverError } = require('./middlewares/serverError');
-const { notFound } = require('./controllers/notFound');
 
 const auth = require('./middlewares/auth');
 const { createUser, login, logout } = require('./controllers/users');
