@@ -64,7 +64,7 @@ app.get('/crash-test', () => {
 app.use('/users', auth, require('./routes/users'));
 app.use('/cards', auth, require('./routes/cards'));
 
-app.use('*', notFound);
+app.all('/*', (req, res) => res.status(404).send('Запрашиваемый ресурс не найден'));
 
 app.use(errorLogger);
 
