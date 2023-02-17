@@ -21,13 +21,15 @@ const allowedCors = [
   'https://domainname.mesto.nomoredomains.club',
 ];
 
-app.use((req, res, next) => {
-  const { origin } = req.headers;
-  if (allowedCors.includes(origin)) {
-    res.header('Access-Control-Allow-Origin', '*');
-  }
-  next();
-});
+const options = {
+  origin: allowedCors,
+  optionSuccessStatus: 200,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'HEAD', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Origin', 'X-Requested-With', 'Accept', 'x-client-key', 'x-client-token', 'x-client-secret', 'Authorization'],
+  credentials: true,
+};
+
+app.use(cors(options));
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -61,7 +63,7 @@ app.get('/crash-test', () => {
 app.use('/users', auth, require('./routes/users'));
 app.use('/cards', auth, require('./routes/cards'));
 
-app.all('*', (req, res) => res.status(404).send('Запрашиваемый ресурс не найден'));
+app.all('/*', (req, res) => res.status(serverError).send('Запрашиваемый ресурс не найден'));
 
 app.use(errorLogger);
 
