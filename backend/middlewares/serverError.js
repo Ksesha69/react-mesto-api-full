@@ -7,5 +7,5 @@ module.exports.serverError = ((err, req, res, next) => {
         ? 'Ошибка сервера'
         : message,
     });
-  next(err);
+  next();
 });

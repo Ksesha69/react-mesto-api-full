@@ -7,6 +7,7 @@ const { celebrate, Joi } = require('celebrate');
 const { errors } = require('celebrate');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const { serverError } = require('./middlewares/serverError');
+const NotFound = require('./errors/notFound');
 
 const auth = require('./middlewares/auth');
 const { createUser, login, logout } = require('./controllers/users');
@@ -63,7 +64,9 @@ app.get('/crash-test', () => {
 app.use('/users', auth, require('./routes/users'));
 app.use('/cards', auth, require('./routes/cards'));
 
-app.all('/*', (req, res) => res.status(serverError).send('Запрашиваемый ресурс не найден'));
+app.all('/*', () => {
+  throw new NotFound('Запрашиваемый ресурс не найден');
+});
 
 app.use(errorLogger);
 
